@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <malloc.h>
-#define MaxSize 10
+#define MaxSize 20
 typedef struct SqString
 {
     char data[MaxSize]; //串的数据
@@ -294,16 +294,59 @@ int KMPIndex(SqString s,SqString t){
     
 }
 
+//以上KMP 中next[]数组中存在一定缺陷，可能会出现重复比较，下面为改进的KMP算法
+void GetNextVal(SqString t,int nextval[]){
+    //对模式串t求nextval[]值
+    int j = 0,k =-1;//k用来计数有多少组字符相等
+    nextval[0] = -1;
+    while (j < t.length)
+    {
+        if(k == -1 || t.data[j] == t.data[k]){
+            j++;k++;
+            if(t.data[j] != t.data[k])
+                nextval[j] = k;//将相同元素个数给 j下标处赋值
+            else
+                nextval[j] = nextval[k];
+        }
+        else
+        {
+            k = nextval[k];
+        }
+        
+    }
+    
+}
+
+int KMPIndex1(SqString s,SqString t){//修正后的KMP算法
+    int nextval[MaxSize],i = 0,j =0;
+    GetNextVal(t,nextval);
+    while(i < s.length && j < t.length){//i持续增加，j值 变化
+        if(j == -1 || s.data[i] == t.data[j]){
+            i++;
+            j++;
+        }
+        else
+            j = nextval[j];//定位 j值正确的下标
+    }
+    if(j >= t.length)
+        return i-t.length;
+    else
+    {
+        return -1;
+    }
+    
+}
+
 
 
 int main(void)
 {
     SqString s,t;
-    char a[] = {'a','b','c','d','\0'};
-    char b[] = {'b','c','d','\0'};
+    char a[] = {'a','b','c','a','a','b','b','a','b','c','a','b','a','a','c','b','a','c','b','a','\0'};
+    char b[] = {'a','b','c','a','b','a','a','\0'};
     InitString(&s,a);
     InitString(&t,b);
-    int i = KMPIndex(s,t);
+    int i = KMPIndex1(s,t);
     printf("%d\n",i);
     DispStr(s);
     DispStr(t);
