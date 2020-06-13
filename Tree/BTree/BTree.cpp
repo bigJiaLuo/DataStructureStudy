@@ -356,6 +356,78 @@ void LevelOrder(PBTNode b){
     
     
 }
+/*
+    已知先序和中序序列 ，构造一棵二叉树
+    pre 先序序列，in 存放中序序列，n为二叉树结点的个数，返回构造好二叉树的根
+    ·没理解，2020年6月13日19:48:23
+*/
+PBTNode CreateBT1(char * pre,char * in,int n){
+    PBTNode b;//结点指针
+    char * p;
+    int k;
+    if(n <= 0)
+        return NULL;
+    b = (BTNode *)malloc(sizeof(BTNode));
+    b->data = *pre;
+    for(p = in; p < in + n;p++){//在中序序列中找等于*pre的结点的位置k
+        if(*p == *pre)//pre指向根节点
+            break;//在in中找打后退出循环
+    }
+    k = p - in;//确定根节点在in中的位置
+    b->lchild = CreateBT1(pre+1,in,k);//递归构造左子树
+    b->rchild = CreateBT1(pre+k+1,p+1,n-k-1);//递归构造右子树
+    return b;
+}
+
+/*
+    已知中序和后序 序列，构造一棵二叉树
+    post 存放后序序列，in为中序序列，n为二叉树结点个数
+*/
+PBTNode CreateBT2(char * post,char * in,int n){
+    PBTNode b;//临时存放结点
+    char r,* p;//r存放根节点值，p指向根节点
+    int k;
+    if(n <= 0)
+        return NULL;
+    r = *(post+n-1);//根节点值
+    b = (PBTNode)malloc(sizeof(BTNode));
+    b->data = r;
+    for(p = in; p < in +n; p++){//在in中查找根节点
+        if(*p == r)
+            break;
+    }
+    k = p - in;//根节点  in中的下标
+    b->lchild = CreateBT2(post,in,k);
+    b->rchild = CreateBT2(post+k,p+1,n-k-1);
+}
+
+/*
+    将顺序存储二叉树，转化为链式存储二叉树
+    递归模型:
+        f(a,i) = NULL       当i大于MaxSize
+        f(a,i) = NULL       当i对应的结点为空
+        f(a,i) = b(创建根结点b，其data值为a[i]);    其他情况
+                b->lchild = f(a,2*i);
+                b->rchild = f(a,2*i +1);
+*/
+PBTNode trans(SqBTree a,int i){
+    PBTNode b;  //根节点
+    if(i > MaxSize)
+        return NULL;
+    if(a[i] == '#')
+        return NULL;//结点不存在
+    b = (PBTNode)malloc(sizeof(BTNode));
+    b->data = a[i];
+    b->lchild = trans(a,2*i);
+    b->rchild = trans(a,2*i+1);
+    return b;
+}
+
+
+
+
+
+
 
 //应用
 /*
@@ -578,7 +650,7 @@ int main(void)
 {
     char *str1 = "a(b(d(,g)),c(e,f))";
     char *str2 = "a(b(d(,g)),c(e))";
-    BTNode T, *PT1, *PT2;
+    BTNode *T, *PT1, *PT2;
     CreateBTNode(&PT1, str1);
     CreateBTNode(&PT2, str2);
     PBTNode s = FindNode(PT1, 'g');
@@ -591,12 +663,18 @@ int main(void)
     // PostOrder(PT1);
     // PostOrder1(PT1);
     // AllPath1(PT1);
-    AllPath2(PT1);
+    // AllPath2(PT1);
     // LevelOrder(PT1);
     // height = Level(PT1,'c',1);
     // DisLeaf(PT1);
     // bool flag = Like(PT1,PT2);
     // ancestor(PT1,'f');
+    char * pre = "ABDGCEF";
+    char * in = "DGBAECF";
+    char * post = "GDBEFCA";
+    // T = CreateBT1(pre,in,7);
+    T = CreateBT2(post,in,7);
+    PreOrder(T);
     getchar();
     getchar();
     return 0;
