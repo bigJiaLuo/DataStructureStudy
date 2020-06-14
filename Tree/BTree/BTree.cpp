@@ -426,9 +426,6 @@ PBTNode trans(SqBTree a,int i){
 
 
 
-
-
-
 //应用
 /*
     给定一棵二叉树，输出其所有的叶子结点
@@ -673,8 +670,9 @@ int main(void)
     char * in = "DGBAECF";
     char * post = "GDBEFCA";
     // T = CreateBT1(pre,in,7);
-    T = CreateBT2(post,in,7);
-    PreOrder(T);
+    // T = CreateBT2(post,in,7);
+    // PreOrder(T);
+    CreaThread(PT1);
     getchar();
     getchar();
     return 0;
