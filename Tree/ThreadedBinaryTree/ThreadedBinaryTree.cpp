@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #define MaxSize 10
-typedef int ElemType;
+typedef char ElemType;
 typedef struct node{
     ElemType data;//数据域
     int ltag,rtag;//线索标记
@@ -30,7 +30,8 @@ void Thread(PTBTNode &p){//对二叉树p进行中序线索化
         if(p->lchild == NULL){
             p->lchild = pre;//左子树不存在，进行前驱结点线索化
             p->ltag = 1;//建立当前结点的前驱线索
-        }else
+        }
+        else
         {
             p->ltag = 0;//左子树存在，ltag为左孩子
         }
@@ -145,6 +146,25 @@ void PreOrder(PTBTNode b)
     }
 }
 
+/*
+    线索二叉树的 中序非递归遍历
+    有点小问题
+*/
+void ThInOrder(TBTNode * tb){
+    PTBTNode p = tb->lchild;//p指向根节点
+    while(p != tb){//不会等于头结点
+        while(p->ltag == 0){//寻找开始结点，（根节点最左的左子树）
+            p = p->lchild;
+        }
+        printf("%c\t",p->data);
+        while(p->rtag == 1 && p != tb){
+            p = p->rchild;
+            printf("%c\t",p->data);
+        }
+        p = p->rchild;
+    }
+}
+
 
 
 int main(void){
@@ -152,7 +172,8 @@ int main(void){
     TBTNode * T1,T2;
     CreateTBTNode(&T1,str1);
     CreaThread(T1);
-    PreOrder(T1);
+    // PreOrder(T1);
+    ThInOrder(T1);
     getchar();
     getchar();
     return 0;
