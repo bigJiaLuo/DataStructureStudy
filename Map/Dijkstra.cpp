@@ -58,6 +58,10 @@ void CreateMGraph(MGraph *G)
         G->edges[j][i] = w; //无向图，矩阵对称
     }
 }
+
+/*
+    path 保存的是 顶点的逆序，其path[j] 保存的是j 的前驱顶点
+*/
 void Dispath(MGraph g, int dist[],int path[],int S[],int v){
     //输出从顶点 v出发的所有最短路径
     int i,j,k;
@@ -140,14 +144,15 @@ void Dijkstra(MGraph G,int v){
             }
         }
         s[u] = 1;//将选出的具有最小距离的顶点u 加入到 S中
-        for ( j = 0; j < G.numVertex; j++)//修改不在S中的顶点距离
+        for ( j = 0; j < G.numVertex; j++)//修改当前最短路径且不在S中的顶点距离
         {
             if (s[j] == 0)
             {
+                    //dist[u]是已确定的v到u 最短路径，dist[j] 为当前 v到j的 路径长度
                 if (G.edges[u][j] < INFINITY && dist[u] + G.edges[u][j] < dist[j])
                 {
-                    dist[j] = dist[u] + G.edges[u][j];
-                    path[j] = u;
+                    dist[j] = dist[u] + G.edges[u][j];//将 dist[j] 替换为 更短的路径
+                    path[j] = u;//u顶点为j顶点的前一个顶点
                 }
                 
             }
