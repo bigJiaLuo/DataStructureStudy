@@ -2,6 +2,7 @@
     没有 尾指针的循环链表
     作者：洛
     时间：2020年6月3日08:48:23
+    复习：2020年8月25日11:39:09
 */
 
 #include <stdio.h>
@@ -47,7 +48,7 @@ bool delQueue(PQueue * q,ElemType * e){
     //判断 队列是否为空
     if((*q)->count == 0)
         return false;
-    (*q)->front++;//队首指针进1
+    (*q)->front = ((*q)->front + 1) % MaxSize;//队首指针进1
     *e = (*q)->data[(*q)->front];
     (*q)->count--;//队列元素个数减一
     return true;

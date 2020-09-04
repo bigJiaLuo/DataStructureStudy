@@ -24,9 +24,9 @@ void createListF(pLinkList pL, ElemType a[], int n);
 
 /*
     判断 第i个结点是否 存在，并且 保存第i结点的地址，*p,
-    寻找 第i-1个元素
+    寻找 第i-j个元素
     若 j = 0，一次都没有循环，将不改变 *P ，插入的位置就是头结点之后
-    返回 TRUE，代表第i个元素为空,FALSE 不为空
+    返回 TRUE，代表第i-j个元素为空,FALSE 不为空
 */
 Status isEmpty(int i, int j, pLinkList *p)
 {
@@ -61,7 +61,7 @@ Status getElem(linkList L, int i, ElemType *e)
 }
 
 /*
-    单链表的第i个数据插入结点
+    循环链表的第i个数据插入结点
     pL为 单链表的头结点的指针变量，i为插入元素位置，e为待插入的数据
     思路：
         1.声明结点p指向链表的头结点，初始化j = 1
@@ -88,7 +88,7 @@ Status listInsert(pLinkList *pL, int i, ElemType e)
 }
 
 /*
-    单链表删除第i个元素
+    循环链表删除第i个元素
     pL为 头结点，i为 第几个元素，e返回删除的数据
     思路：
         1.声明一结点指向 第一个结点，初始化 j = 1
@@ -101,7 +101,7 @@ Status listDelete(pLinkList *pL, int i, ElemType *e)
 {
     int j = 1;
     pLinkList p = (*pL), q; // 第一个结点
-    if (isEmpty(i, j, &p))
+    if (isEmpty(i, j, & p))
         return ERROR; //删除元素 不存在
     //删除 第i个结点
     q = p->next;

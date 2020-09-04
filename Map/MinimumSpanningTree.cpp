@@ -60,8 +60,9 @@ void CreateMGraph(MGraph *G)
 
 /*
     Prim普里姆算法
+    adjvex[j]定位两个邻接点，lowcost[j]为(adjvex[j],j)的权值
     adjvex[j] 为 lowcost[j]代表边 的起点，j为终点，lowcost[j] 为 权值    如：(adjvex[j],j) = lowcost[j]
-    lowcost[j]为(adjvex[j],j)的权值
+    
     lowcost[k] = 0,将已找出的最小权值的边的终点加入最小生成树
     思路： 
         1.初始化U={v}，以v到其他顶点的所有边为候选边
@@ -81,7 +82,7 @@ void Prim(MGraph g, int v)
     }
 
     for (i = 1; i < g.numVertex; i++) //找出（n-1）个顶点
-    {
+    { 
         min = INFINITY; //初值为极大值
         for (j = 0; j < g.numVertex; j++)
         {
@@ -96,11 +97,11 @@ void Prim(MGraph g, int v)
         lowcost[k] = 0;                                     //将 k代表的顶点加入 最小生成树,
         for (j = 0; j < g.numVertex; j++)                   //更新k顶点到各边的权值数组lowcost，若k顶点到j的权值比 之前 顶点到j的权值 要小，则替换原来的lowcost[j]
         {
-            //更新 lowcost，adjvex数组，因为 新加入k顶点
-            if (g.edges[k][j] != 0 && g.edges[k][j] < lowcost[j]) //当前边存在，且 当前边权值小于对应 之前顶点到j的权值，替换之
+            //更新 lowcost，adjvex数组，因为 新加入k顶点，以k顶点为开始顶点,与k相邻的未加入最小生成树的顶点的权值 和 lowcost[j]进行比较
+            if (g.edges[k][j] != 0 && g.edges[k][j] < lowcost[j]) //当前边存在，且 当前<k,j>边权值小于对应 之前顶点 <lowcost[j],j> 的权值，替换之
             {
                 lowcost[j] = g.edges[k][j]; //（k，j） 的值替换（原先顶点，j）的值
-                adjvex[j] = k;              //将开始顶点赋值
+                adjvex[j] = k;              //将更小权值的开始顶点存入对应adjvex[j], <adjvex[j],j>
             }
         }
     }
@@ -143,7 +144,7 @@ void insertSort(Edge E[], int edges)
             ·取出 边集中第j条边中的 头尾顶点
             ·将其顶点所在的辅助数组中的值取出
             ·判断 sn1和sn2是否相等，相等则连通，跳过
-                ·不相等，生成边加1，打印边路径
+                ·不相等，生成边加1，打印边路径，并使其连通
             j++，边集加一
         4.直到while循环结束
 */
@@ -153,12 +154,14 @@ void Kruskal(MGraph g)
     int vset[MAXV];
     Edge E[MaxEdges];                     //存放所有边
     k = 0;                            //E数组从0下标开始计
+    // 1.
     for (i = 0; i < g.numVertex; i++) //由g产生的边集E
     {
         for (j = 0; j < g.numVertex; j++)
         {
             if (g.edges[i][j] != 0 && g.edges[i][j] != INFINITY)
             {
+                //将所有g图中所有的边及其权值加入E[],并记录边的个数
                 E[k].u = i;
                 E[k].v = j;
                 E[k].w = g.edges[i][j];
@@ -166,39 +169,38 @@ void Kruskal(MGraph g)
             }
         }
     }
-
+    // 2.
     insertSort(E, g.numEdges);// 采用直接插入排序对E数组按权值排序
-    for ( i = 0; i < g.numVertex; i++)//初始化 辅助数组
+
+    for ( i = 0; i < g.numVertex; i++)//初始化 辅助数组,使各顶点开始都不连通，不产生回路
     {
         vset[i] = i;
     }
     k = 1;// k表示当前构造生成树的第几条边，初值为1
     j = 0;//E中边的下标
-    while (k < g.numVertex)//生成树的边数小于顶点数循环
+    while (k < g.numVertex)//生成树的边数小于顶点数循环，生成 numVertex-1条边
     {
         u1 = E[j].u; v1 = E[j].v;//取一条边的 头尾顶点
         sn1 = vset[u1];
         sn2 = vset[v1];
-        if (sn1 != sn2)
+        if (sn1 != sn2)//判断此边是否连通
         {
             printf("(%d, %d): %d\n",u1,v1,E[j].w);
             k++;//生成边数加1
-            for ( i = 0; i < g.numVertex; i++)//两集合统一编号
+            for ( i = 0; i < g.numVertex; i++)//两顶点集合统一编号
             {
-                if (vset[i] == sn2)//将sn2代表的vset[i] 改为 sn1
+                if (vset[i] == sn2)//将sn2代表的vset[i] 改为 sn1，是两顶点连通
                 {
                     vset[i] = sn1;
                 }
-                
             }
             
         }
         j++;//下一条边
 
     }
-    
-    
 }
+
 
 int main(void)
 {

@@ -1,12 +1,14 @@
 /*
     弗洛伊德算法
+    求各顶点对之间的最短路径
     时间：2020年7月8日20:16:34
+    复习：2020年8月27日14:35:18
     作者：泽兑ing
 */
 
 #include <stdio.h>
-#define MAXV 7        //最大顶点个数
-#define MaxEdges 12 //最大边数
+#define MAXV 7         //最大顶点个数
+#define MaxEdges 12    //最大边数
 #define INFINITY 65535 //无穷大
 typedef int InfoType;
 typedef struct
@@ -36,6 +38,7 @@ void CreateMGraph(MGraph *G)
         scanf("%d", &G->vexs[i].no); //写入顶点信息
     }
 
+//初始化所有边
     for (i = 0; i < G->numVertex; i++)
     {
         for (int j = 0; j < G->numVertex; j++)
@@ -58,95 +61,99 @@ void CreateMGraph(MGraph *G)
         G->edges[j][i] = w; //无向图，矩阵对称
     }
 }
+/*
+    输出最短路径
+*/
+void Dispath(MGraph g, int A[][MAXV], int path[][MAXV])
+{
+    int i, j;           //循环迭代
+    int k;              //临时存放 前驱结点
+    int apath[MAXV], d; //apath存放最短路径,d 为 apath角标
 
-void Dispath(MGraph g,int A[][MAXV],int path[][MAXV]){
-    int i,j;//循环迭代
-    int k;//临时存放 前驱结点
-    int apath[MAXV],d;//apath存放最短路径,d 为 apath角标
-    for ( i = 0; i < g.numVertex; i++)
+    //输出整个邻接矩阵中各个顶点之间的最短路径
+    for (i = 0; i < g.numVertex; i++)
     {
-        for ( j = 0; j < g.numVertex; j++)
+        for (j = 0; j < g.numVertex; j++)
         {
             if (A[i][j] < INFINITY && i != j)
             {
-                printf("    从%d到%d的最短路径为：",i,j);
-                k = path[i][j];//j的前驱顶点
+                printf("    从%d到%d的最短路径为：", i, j);
+                k = path[i][j]; //j的前驱顶点,即i
                 d = 0;
-                apath[d] = j;//添加终点
-                while (k != -1 && k != i)//路径上添加中间的
+                apath[d] = j;             //添加终点
+                while (k != -1 && k != i) //将以j为终点的，i为起点的最短路径存入apath中
                 {
                     d++;
+                    //将j的前驱，即k加入到apath中，k指向自身的前驱
                     apath[d] = k;
                     k = path[i][k];
                 }
                 d++;
-                apath[d] = i;//添加起点
-                printf("    %d",apath[d]);
-                for (int s = d-1; s >= 0; s--)
-                {
-                    printf(",%d",apath[s]);
-                }
-                printf("  路径长度为：%d\n",A[i][j]);
+                apath[d] = i; //添加起点
 
+                //输出i到j的 最短路径
+                printf("    %d", apath[d]);
+                for (int s = d - 1; s >= 0; s--)//从第二个顶点输出，因apaeh为逆序存储，所以逆序遍历
+                {
+                    printf(",%d", apath[s]);
+                }
+                printf("  路径长度（权值）为：%d\n", A[i][j]);
             }
-            
         }
-        
     }
-    
 }
 
 /*
+    弗洛伊德算法，求最短路径
     A[i][j]存放顶点i 到j的当前最短路径长度；
-    path用于推到导所有顶点之间的最短路径，第i行表示 顶点i到其他顶点的最短路径，如path[i][j]存放顶点j的前驱顶点
+    path用于推导所有顶点之间的最短路径，第i行表示 顶点i到其他顶点的最短路径，如path[i][j]存放顶点j的前驱顶点
     思想：
         初始化原邻接矩阵，每个顶点A[i][j]，都对 i，j 进行中间点k连接， A[i][j] = MIN{A[i][j] ,A[i][k]+A[k][j]},并修改对应的路径长度
         直到所有经过k顶点的所有路径都比较完毕，在处理完k顶点的基础上得到对应A，path，再处理 其他 经过顶点
         以此类推得到所有顶点对之间的最短路径长度与最短路径
 */
-void Floyd(MGraph g){
-    int A[MAXV][MAXV],path[MAXV][MAXV];
-    int i,j,k;//k为中间点，i为边的开始结点，j为边的终端结点
-    for ( i = 0; i < g.numVertex; i++)//初始化
+void Floyd(MGraph g)
+{
+    int A[MAXV][MAXV], path[MAXV][MAXV];
+    int i, j, k;                      //k为中间点，i为边的开始结点，j为边的终端结点
+    for (i = 0; i < g.numVertex; i++) //初始化
     {
         for (j = 0; j < g.numVertex; j++)
         {
-            A[i][j] = g.edges[i][j]; //默认为原邻接矩阵
-            if (i != j && g.edges[i][j] < INFINITY)//<i,j>存在，且不是本身
+            A[i][j] = g.edges[i][j];                //默认为原邻接矩阵
+            if (i != j && g.edges[i][j] < INFINITY) //<i,j>存在，且不是本身
             {
-                path[i][j] = i;//保存j的前驱结点
-            }else
+                path[i][j] = i; //保存j的前驱结点，i是顶点，j为i的邻接点
+            }
+            else
             {
-                path[i][j] = -1;//无边，本身 置为-1
+                path[i][j] = -1; //无边，本身 置为-1
             }
         }
     }
 
-    for ( k = 0; k < g.numVertex; k++)
+    for (k = 0; k < g.numVertex; k++)
     {
-        for ( i = 0; i < g.numVertex; i++)
+        for (i = 0; i < g.numVertex; i++)
         {
-            for ( j = 0; j < g.numVertex; j++)//修改最短路径
+            for (j = 0; j < g.numVertex; j++) //修改最短路径
             {
-                if (A[i][j] > A[i][k] + A[k][j])//顶点i 到顶点j，大于 顶点i 借顶点k 再到顶点j时
+                if (A[i][j] > A[i][k] + A[k][j]) //顶点i 到顶点j，大于 顶点i 借顶点k 再到顶点j时
                 {
-                    A[i][j] = A[i][k] + A[k][j];//<i,j>替换更小的路径长度
-                    path[i][j] = path[k][j];//将<i,j>的最短路径的前驱改为 最后一个顶点的前驱（path[k][j]）
-                }
-                
+                    A[i][j] = A[i][k] + A[k][j]; //<i,j>替换更小的路径长度
+                    path[i][j] = path[k][j];     //将之前path[]中j的前驱 修改为更优更短的路径中（i,k,j）  j顶点的前驱,即k
+                    //path[i][j] = k
+                } 
             }
         }
-        
     }
-    Dispath(g,A,path);//输出最短路径
-    
-
+    Dispath(g, A, path); //输出最短路径
 }
 
-
-int main(void){
+int main(void)
+{
     MGraph G;
-    int edges[7][7] = {{0,4,6,6,INFINITY,INFINITY,INFINITY},{INFINITY,0,1,INFINITY,7,INFINITY,INFINITY},{INFINITY,INFINITY,0,INFINITY,6,4,INFINITY},{INFINITY,INFINITY,2,0,INFINITY,5,INFINITY},{INFINITY,INFINITY,INFINITY,INFINITY,0,INFINITY,6},{INFINITY,INFINITY,INFINITY,INFINITY,1,0,8},{INFINITY,INFINITY,INFINITY,INFINITY,INFINITY,INFINITY,0}};
+    int edges[7][7] = {{0, 4, 6, 6, INFINITY, INFINITY, INFINITY}, {INFINITY, 0, 1, INFINITY, 7, INFINITY, INFINITY}, {INFINITY, INFINITY, 0, INFINITY, 6, 4, INFINITY}, {INFINITY, INFINITY, 2, 0, INFINITY, 5, INFINITY}, {INFINITY, INFINITY, INFINITY, INFINITY, 0, INFINITY, 6}, {INFINITY, INFINITY, INFINITY, INFINITY, 1, 0, 8}, {INFINITY, INFINITY, INFINITY, INFINITY, INFINITY, INFINITY, 0}};
     G.numVertex = 7;
     G.numEdges = 12;
     for (int i = 0; i < G.numVertex; i++)
@@ -155,7 +162,6 @@ int main(void){
         {
             G.edges[i][j] = edges[i][j];
         }
-        
     }
     Floyd(G);
 

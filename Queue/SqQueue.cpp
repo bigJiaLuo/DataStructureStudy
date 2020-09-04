@@ -1,6 +1,7 @@
 /*
     作者：洛
     时间：2020年6月2日15:17:26
+    复习：2020年8月25日11:19:48
 */
 
 #include <stdio.h>
@@ -70,7 +71,7 @@ bool enQueue(PQueue * q,ElemType e){
 }
 
 /*
-    删除队头
+    删除队头，出队
     返回：
         true，删除成功，反之
 */
@@ -78,8 +79,7 @@ bool delQueue(PQueue * q,ElemType * e){
     //判断队列是否为空
     if(isEmpty(*q))
         return false;
-    *e = (*q)->data[(*q)->rear];
-    (*q)->rear--;//队列rear 减1
+    *e = (*q)->data[++(*q)->front];//队列front 加1
 
     return true;
 }

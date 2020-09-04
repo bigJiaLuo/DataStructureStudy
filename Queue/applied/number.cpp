@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <malloc.h>
-#define MaxSize 10
+#define MaxSize 9
 
 typedef int ElemType;
 typedef struct SqQueue{

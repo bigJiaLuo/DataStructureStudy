@@ -14,7 +14,7 @@ typedef struct Node
 {
     ElemType data;
     struct Node * prior;//上一结点 地址
-    struct Node *next; //下一结点 地址
+    struct Node * next; //下一结点 地址
 } doubleList, *pdoubleList;
 
 Status getElem(doubleList L, int i, ElemType *e);
@@ -24,8 +24,8 @@ void initList(pdoubleList *pL);
 void createListF(pdoubleList pL, ElemType a[], int n);
 
 /*
-    判断 第i个结点是否 存在，并且 保存第i结点的地址，*p
-    返回 TRUE，代表第i-1个元素为空,FALSE 不为空
+    判断 第i-j个结点是否 存在，并且 保存第i结点的地址，*p
+    返回 TRUE，代表第i个元素为空,FALSE 不为空
 */
 Status isEmpty(int i, int j, pdoubleList *p)
 {
@@ -66,7 +66,7 @@ Status getElem(doubleList L, int i, ElemType *e)
         3.若链表末尾p为空，则说明第i个元素不存在
         4.否则查找成功，在系统中生成一段动态存储空间 s
         5.将数据元素e 赋值为 s->data
-        6.单链表的插入标准语句
+        6.双链表的插入标准语句
             s->next = p->next;//新节点后继连接第i个结点
             s->prior = p;//新节点前驱连接 第i-1个结点
             p->next->prior = s;//第i个结点前驱链接 新节点s
@@ -149,8 +149,8 @@ void createListF(pdoubleList *pL, ElemType a[], int n)
 
         p->prior = (*pL);//p的前驱指向头结点
         p->next = (*pL)->next;//p的后继指向第一个结点
-        (*pL)->next->prior = p;//第一个结点前驱指向 p
-        (*pL)->next = p;  //头结点后继指向  p
+        (*pL)->next->prior = p;//旧首节点结点前驱指向 p
+        (*pL)->next = p;  //  p称为新的首节点
     }
 }
 
@@ -196,9 +196,9 @@ void createListR(pdoubleList *pL, ElemType a[], int n)
         //新节点插入到最后一位，r重新指向最后一位
         r->next = p;
         p->prior = r;
-        r = p;//重新指向最后一位结点
+        r = p;//重新指向最后一位结点，且下一次循环将p-next域赋值
     }
-    //尾指针next为头结点
+    //尾指针next为头结点，头结点的前驱为 尾结点
     r->next = *pL;
     (*pL)->prior = r;
 }
@@ -258,7 +258,7 @@ Status clearList(pdoubleList *pL)
 
 
 
-// 单链表应用示例
+// 双链表应用示例
 /*
     1.有一带头结点的单链表L = {a1,b1,a2,b2...an,bn},设计一个算法将其
     拆分为两个带头结点的单链表L1和L2，L1={a1,a2,an},L2={b1,b2,..bn}.
@@ -290,7 +290,7 @@ void split(pdoubleList * L,pdoubleList * L1,pdoubleList * L2){
 }
 
 /*
-    删除一个单链表中最大的元素
+    删除一个双链表中最大的元素
     思路：
         1.删除一个元素，需要获取其前一位的元素
         2.将第一结点赋给max，p； maxpre 保存max前一结点，pre 保存 p前一结点
@@ -359,12 +359,12 @@ void sort(pdoubleList * pL){
     1.有一双链表L， 设计一算法，将L中所有元素的顺序逆序
     思路：  
         1.先构造一个只包含头结点的双链表（沿用L的头结点）L
-            1.1  变量p 执行L的开始结点
+            1.1  变量p 指向L的开始结点
         2.通过遍历原链表，使用头插法重新插入
 */
 void reverse(pdoubleList * L){
     pdoubleList p = (*L)->next,q;//p指向 L的开始结点，q保存头插法丢失的下一结点
-    (*L)->next = *L;//构造一个空间结点
+    (*L)->next = *L;//构造一个空结点
     while(p != *L){//扫描L
         q = p->next;//保存下一结点
         //头插法
@@ -433,14 +433,14 @@ int main(void)
     // initList(&L2);
     // split(&L,&L1,&L2);
     displayList(L);
-    // reverse(&L);
+    reverse(&L);
     // sort(&L);
-    delElem2(&L,10);
+    // delElem2(&L,10);
     // listDeleteMax(&L);
     // int e;
     // listDelete(&L,10,&e);
     // listInsert(&L, 1, 100);
-    displayList1(L);
+    displayList(L);
     // displayList(L2);
 
     getchar();

@@ -1,6 +1,7 @@
 /*
     作者：洛
     时间：2020年5月30日16:28:12
+    复习：2020年8月25日09:53:34
     顺序栈
 
 */
@@ -108,7 +109,7 @@ Status getTopElem(PSqStack stack,ElemType * e){
 Status displayStack(SqStack stack){
     //不可以传递 指针变量过来，会修改指针变量所指top的值，传入非指针变量
     ElemType e = NULL;
-    int top = stack.top;
+    // int top = stack.top;
     printf("遍历顺序栈：");
     while(!isEmpty(&stack)){
         getTopElem(&stack,&e);

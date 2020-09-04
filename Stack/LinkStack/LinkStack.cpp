@@ -42,13 +42,14 @@ void destroryStack(PLinkStack * stack){
         s = q;//保存下一结点
         q = q->next;//q指向下一结点
     }
-    free(s);//释放头结点
+    free(s);//释放尾结点
     (*stack)->next =  NULL;
 }
 
 
 /*
     进栈
+    stack 链栈，e 待插入元素 
 */
 bool push(PLinkStack * stack,ElemType e){
     PLinkStack s = (PLinkStack)malloc(sizeof(LinkStack));
@@ -86,7 +87,7 @@ bool getTopElem(PLinkStack stack,ElemType * e){
 }
 
 /*
-    由于 p知识用来存储 stack的下一节点，并没有又 该  p->next域中数据
+    由于 p指针用来存储 stack的下一节点，并没有改变  p->next域中数据
 */
 void displayStack(PLinkStack stack){
     PLinkStack p = stack->next;//指向栈顶元素

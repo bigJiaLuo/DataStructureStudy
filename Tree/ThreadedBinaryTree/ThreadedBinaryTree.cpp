@@ -1,6 +1,7 @@
 /*
     线索二叉树
     时间：2020年6月14日10:04:08
+    复习：2020年8月30日15:13:57
     作者：洛
 */
 #include <stdio.h>
@@ -24,6 +25,7 @@ PTBTNode pre;//全局变量，保存p的前驱结点
 */
 void Thread(PTBTNode &p){//对二叉树p进行中序线索化
     if(p != NULL){
+        //开始访问左子树
         Thread(p->lchild);//左子树线索化
 
         //此时p结点左子树不存在，或已经线索化
@@ -43,8 +45,10 @@ void Thread(PTBTNode &p){//对二叉树p进行中序线索化
         {
             pre->rtag = 0;
         }
-
+        //指向刚刚已访问完的p结点
         pre = p;
+
+        //开始访问p的右子树
         Thread(p->rchild);
         
     }
@@ -71,6 +75,7 @@ TBTNode * CreaThread(PTBTNode b){//中序
         root->lchild = b;
         pre = root;
         Thread(b);
+        //pre此时指向最后一个结点
         pre->rchild = root;
         pre->rtag = 1;
         root->rchild = pre;//头结点右线索化
@@ -148,7 +153,6 @@ void PreOrder(PTBTNode b)
 
 /*
     线索二叉树的 中序非递归遍历
-    有点小问题
 */
 void ThInOrder(TBTNode * tb){
     PTBTNode p = tb->lchild;//p指向根节点
@@ -156,11 +160,16 @@ void ThInOrder(TBTNode * tb){
         while(p->ltag == 0){//寻找开始结点，（根节点最左的左子树）
             p = p->lchild;
         }
-        printf("%c\t",p->data);
-        while(p->rtag == 1 && p != tb){
+        //找到最左结点，打印
+        printf("%c",p->data);
+
+        //p结点打印完，寻找右孩子
+        //右孩子为线索
+        while(p->rtag == 1 && p->rchild != tb){
             p = p->rchild;
-            printf("%c\t",p->data);
+            printf("%c",p->data);
         }
+        //右孩子为结点
         p = p->rchild;
     }
 }
@@ -171,9 +180,11 @@ int main(void){
     char * str1 = "a(b(d(,g)),c(e,f))";
     TBTNode * T1,T2;
     CreateTBTNode(&T1,str1);
-    CreaThread(T1);
+    TBTNode * root = CreaThread(T1);
+
+
     // PreOrder(T1);
-    ThInOrder(T1);
+    ThInOrder(root);
     getchar();
     getchar();
     return 0;

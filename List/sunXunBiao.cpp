@@ -12,7 +12,7 @@ typedef int ElemType; // 默认的元素类型 int ，别名ElemType
 typedef struct List
 {
     /* data */
-    ElemType *data; //包含 默认大小的 ElemType类型数组
+    ElemType * data; //包含 默认大小的 ElemType类型数组
     int length;     // 线性表长度
 } SqList;
 
@@ -99,6 +99,7 @@ Status displayList(SqList l)
         return ERROR;
     for (int i = 0; i < l.length; i++)
     {
+        // 每输出10个数 ，换行
         if (i % 9 == 0 && i != 0)
             printf("\n");
         printf("%d\t", l.data[i]);
@@ -281,7 +282,7 @@ void move1(SqList *pL)
         }
         while (i < j && pL->data[i] <= pivot)
         {
-            i++;
+            i++;//保存比基准 大 的 元素下标
         }
         if (i < j)
         {
@@ -311,7 +312,7 @@ void move2(SqList *pL)
 {
     ElemType pivot = pL->data[0];  //基准
     int i = 0, j = pL->length - 1; // 最小，最大下标
-    while (i < j)
+    while (i  < j)//最后i，j
     {
         //从右向左 循环
         while (i < j && pL->data[j] > pivot)
@@ -329,7 +330,7 @@ void move2(SqList *pL)
         j--;
     }
     //最后指向原先 j所指的 下标位置，这个位置之后的元素都大于基准，且已经赋值给其他下标，将基准赋给该位置 
-    pL->data[i] = pivot;
+     pL->data[j] = pivot;
     printf("i = %d,j = %d\n", i, j);
     return;
 }

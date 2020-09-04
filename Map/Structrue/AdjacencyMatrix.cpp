@@ -1,7 +1,7 @@
 /*
     邻接矩阵
     时间：2020年6月15日19:55:40
-    作者：洛
+    作者：泽兑ing
 */
 #include <stdio.h>
 #define MAXV 10//最大顶点个数
@@ -138,6 +138,7 @@ void BFS(MGraph G, int v)
         }
     }
 }
+
 
 int main(void){
 

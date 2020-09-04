@@ -1,6 +1,8 @@
 /*
     狄克斯拉特算法
+    Dijkstra 求某一顶点到其他各顶点的最短路径
     时间：2020年7月7日10:39:12
+    复习：2020年8月27日15:59:08
     作者：泽兑ing
 */
 
@@ -70,7 +72,7 @@ void Dispath(MGraph g, int dist[],int path[],int S[],int v){
     {
         if (S[i] == 1 && i != v)
         {
-            printf("    从顶点%d到顶点%d路径长度为：%d\t路径为:",v,i,dist[i]);
+            printf("    从顶点%d到顶点%d路径长度为：%d\t\t路径为:",v,i,dist[i]);
             d = 0;
             apath[d] = i;//添加路径上的终点
             k = path[i];//k 保存 i 的前一个顶点编号
@@ -104,6 +106,7 @@ void Dispath(MGraph g, int dist[],int path[],int S[],int v){
 
 
 /*
+    Dijkstra 求某一顶点到其他各顶点的最短路径
     思想：
         迪克斯特拉的思想为：通过原点v 找到一个与之 最短路径的一个邻接点，再通 之前的邻接点找到下一个权值最小的邻接点，
         在此期间，每找到一个新的邻接点都要与U中其他顶点比较权值并修改（不包括以加入到S中的顶点），基于以求出的最短路径的基础上，进一步求v到u的其他顶点的最短路径
@@ -132,6 +135,7 @@ void Dijkstra(MGraph G,int v){
     }
 
     s[v] = 1;path[v] = 0;//将原点v加入S中并标记；path中 原点v的前一个顶点没有，故设为0
+
     for ( i = 0; i < G.numVertex; i++)
     {
         mindis = INFINITY; //权值最小 初值为 无穷
@@ -151,8 +155,8 @@ void Dijkstra(MGraph G,int v){
                     //dist[u]是已确定的v到u 最短路径，dist[j] 为当前 v到j的 路径长度
                 if (G.edges[u][j] < INFINITY && dist[u] + G.edges[u][j] < dist[j])
                 {
-                    dist[j] = dist[u] + G.edges[u][j];//将 dist[j] 替换为 更短的路径
-                    path[j] = u;//u顶点为j顶点的前一个顶点
+                    dist[j] = dist[u] + G.edges[u][j];//将 dist[j] 替换为 更短的路径长度
+                    path[j] = u;//u顶点为j顶点的前一个顶点，替换之前更长的前驱顶点
                 }
                 
             }

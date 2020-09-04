@@ -2,6 +2,7 @@
     顺序串
     作者：洛
     时间：2020年6月4日15:01:27
+    复习：2020年8月25日14:58:08
 */
 
 #include <stdio.h>
@@ -110,6 +111,7 @@ SqString SubStr(SqString s, int i, int j)
     SqString str;
     int k;
     str.length = 0;
+    //逻辑序号转 物理序号进行判断
     if (i <= 0 || i > s.length || j < 0 || i + j - 1 > s.length)
         return str; //参数错误,返回空串
     for (k = i - 1; k < s.length; k++)
@@ -144,6 +146,7 @@ SqString InsStr(SqString s1, int i, SqString s2)
     {                                         //将 s1.data[i-1 .. length-1]赋值到str
         str.data[s2.length + j] = s1.data[j]; //s2.length+i-1  两次循环之后，应插入的位置
     }
+    str.length = s1.length+s2.length;
 
     return str;
 }

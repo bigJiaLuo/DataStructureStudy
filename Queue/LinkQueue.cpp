@@ -2,6 +2,7 @@
     链式队列
     作者：洛
     时间：2020年6月3日09:45:22
+    复习：2020年8月25日11:45:18
 */
 #include <stdio.h>
 #include <malloc.h>
@@ -36,17 +37,17 @@ void destroryQueue(PHeadQueue * q){
     PLinkQueue front = (*q)->front,r;//fonrt队首指针,r指向下一个
     if(front != NULL){//释放数据结点
         r = front->next;
-        while (r!=NULL)
+        while (r != NULL)
         {
             /* code */
             free(front);
-            front = r;//front，r都指向下一个
+            front = r;//front，r都指向下一个接结点
             r = front->next;
         }
         
     }
-    free(front);
-    free(*q);
+    free(front);//只有一个结点或因循环结束还未释放的front
+    free(*q);//释放头结点
 }
 
 /*
