@@ -9,16 +9,18 @@
 #include <malloc.h>
 #define Max 10
 #define NON -9999
+typedef int KeyNode;
+
 typedef struct SQList
 {
-    int arr[Max];//顺序表数据域,arr[0]存放哨兵或其他
+    KeyNode arr[Max];//顺序表数据域,arr[0]存放哨兵或其他
     int length;//为顺序表中实际元素个数
 }SQList,*PSQList;
 
 /* 
     交换两元素
  */
-void swap(int * arr,int i,int j){
+void swap(KeyNode * arr,int i,int j){
     int temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
